@@ -381,6 +381,31 @@ section.bg-navy-dark { background: var(--navy-dark); color: var(--white); }
   box-shadow: var(--shadow);
   transition: transform 0.2s, box-shadow 0.2s;
   border-top: 4px solid transparent;
+  position: relative;
+}
+.card-tag {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  line-height: 1.6;
+}
+.card-tag-residential {
+  background: rgba(42,130,200,0.12);
+  color: #2a6fa0;
+}
+.card-tag-commercial {
+  background: rgba(42,160,100,0.12);
+  color: #1e7a50;
+}
+.card-tag-both {
+  background: rgba(140,60,180,0.11);
+  color: #7a3a9a;
 }
 .service-card:hover {
   transform: translateY(-4px);

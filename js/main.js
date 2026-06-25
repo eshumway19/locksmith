@@ -10,13 +10,26 @@ document.querySelectorAll('.faq-question').forEach(q => {
 
 // Form submission — posts to /api/submit and sends owner an SMS via Textbelt
 document.querySelectorAll('form[data-form-type]').forEach(form => {
+  // Inject a status message element below the submit button
+  const btn = form.querySelector('button[type="submit"]');
+  const statusEl = document.createElement('p');
+  statusEl.style.cssText = 'margin-top:12px;font-size:14px;font-weight:600;text-align:center;display:none';
+  btn.insertAdjacentElement('afterend', statusEl);
+
+  function showStatus(msg, isSuccess) {
+    statusEl.textContent = msg;
+    statusEl.style.color = isSuccess ? '#27ae60' : '#c0392b';
+    statusEl.style.display = 'block';
+    setTimeout(() => { statusEl.style.display = 'none'; }, 5000);
+  }
+
   form.addEventListener('submit', async e => {
     e.preventDefault();
-    const btn = form.querySelector('button[type="submit"]');
     const originalText = btn.textContent;
 
     btn.textContent = 'Sending...';
     btn.disabled = true;
+    statusEl.style.display = 'none';
 
     const formType = form.dataset.formType;
     const data = {
@@ -37,31 +50,19 @@ document.querySelectorAll('form[data-form-type]').forEach(form => {
       const json = await res.json();
 
       if (res.ok && json.success) {
-        btn.textContent = '✓ Request Sent!';
-        btn.style.background = '#27ae60';
-        form.reset();
-        setTimeout(() => {
-          btn.textContent = originalText;
-          btn.style.background = '';
-          btn.disabled = false;
-        }, 4000);
-      } else {
-        btn.textContent = json.error || 'Something went wrong.';
-        btn.style.background = '#c0392b';
+        btn.textContent = originalText;
         btn.disabled = false;
-        setTimeout(() => {
-          btn.textContent = originalText;
-          btn.style.background = '';
-        }, 4000);
+        form.reset();
+        showStatus('✓ Your request was sent! We\'ll be in touch soon.', true);
+      } else {
+        btn.textContent = originalText;
+        btn.disabled = false;
+        showStatus('Error: ' + (json.error || 'Something went wrong. Please call us directly.'), false);
       }
     } catch {
-      btn.textContent = 'Network error — please call us.';
-      btn.style.background = '#c0392b';
+      btn.textContent = originalText;
       btn.disabled = false;
-      setTimeout(() => {
-        btn.textContent = originalText;
-        btn.style.background = '';
-      }, 4000);
+      showStatus('Network error — please call us directly at (435) 590-4244.', false);
     }
   });
 });

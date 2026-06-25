@@ -23,7 +23,6 @@ module.exports = async function handler(req, res) {
     `New ${label} - All Secure Lock`,
     `Name: ${name}`,
     `Phone: ${phone}`,
-    email ? `Email: ${email}` : null,
     `Service: ${service}`,
     message ? `Notes: ${message}` : null,
   ].filter(Boolean).join('\n');

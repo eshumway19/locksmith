@@ -17,12 +17,24 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'Name, phone, and service are required.' });
   }
 
+  // Reject name if it looks like a URL
+  if (/https?:\/\/|www\.|\.com|\.net|\.org|\.io|\.co\b|\.gov|\.edu/i.test(name)) {
+    return res.status(400).json({ error: 'Please enter a valid name.' });
+  }
+
+  // Normalize phone to 10 digits
+  const digits = phone.replace(/\D/g, '');
+  const normalizedPhone = digits.length === 11 && digits.startsWith('1') ? digits.slice(1) : digits;
+  if (normalizedPhone.length !== 10) {
+    return res.status(400).json({ error: 'Please enter a valid 10-digit US phone number.' });
+  }
+
   const label = formType === 'callback' ? 'Callback Request' : 'Free Quote';
 
   const sms = [
     `New ${label} - All Secure Lock`,
     `Name: ${name}`,
-    `Phone: ${phone}`,
+    `Phone: ${normalizedPhone}`,
     `Service: ${service}`,
     message ? `Notes: ${message}` : null,
   ].filter(Boolean).join('\n');

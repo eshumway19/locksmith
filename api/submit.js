@@ -14,7 +14,7 @@ module.exports = async function handler(req, res) {
   const { name, phone, email, service, message, formType } = body || {};
 
   if (!name || !phone || !service) {
-    return res.status(400).json({ error: 'Name, phone, and service are required.', received: body });
+    return res.status(400).json({ error: 'Name, phone, and service are required.' });
   }
 
   const label = formType === 'callback' ? 'Callback Request' : 'Free Quote';
@@ -71,7 +71,7 @@ async function checkAndAlertQuota() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           phone: alertPhone,
-          message: `All Secure Lock alert: Textbelt balance is low — ${quotaRemaining} texts remaining. Recharge at textbelt.com.`,
+          message: `All Secure Lock alert: Textbelt balance is low — ${quotaRemaining} texts remaining. Please recharge soon.`,
           key,
         }),
       });

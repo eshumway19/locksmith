@@ -6,10 +6,15 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { name, phone, email, service, message, formType } = req.body || {};
+  let body = req.body;
+  if (typeof body === 'string') {
+    try { body = JSON.parse(body); } catch {}
+  }
+
+  const { name, phone, email, service, message, formType } = body || {};
 
   if (!name || !phone || !service) {
-    return res.status(400).json({ error: 'Name, phone, and service are required.' });
+    return res.status(400).json({ error: 'Name, phone, and service are required.', received: body });
   }
 
   const label = formType === 'callback' ? 'Callback Request' : 'Free Quote';
